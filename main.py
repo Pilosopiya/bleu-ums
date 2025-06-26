@@ -20,8 +20,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         # SUSUNTUKIN Q GOMALAW
-        "https://bleu-ums.vercel.app/" # ums frontend
-        "https://bleu-pos-eight.vercel.app/" # pos frontend
+        "https://bleu-ums.vercel.app", # ums frontend
+        "https://bleu-pos-eight.vercel.app", # pos frontend
 
         # IMS frontend and services
         "http://localhost:3000",  # ims frontend
