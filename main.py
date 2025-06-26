@@ -22,6 +22,7 @@ app.add_middleware(
         # SUSUNTUKIN Q GOMALAW
         "https://bleu-ums.vercel.app", # ums frontend
         "https://bleu-pos-eight.vercel.app", # pos frontend
+        "https://bleu-ims.vercel.app",
 
         # IMS frontend and services
         "http://localhost:3000",  # ims frontend
