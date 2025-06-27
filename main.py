@@ -25,12 +25,12 @@ app.add_middleware(
         "https://bleu-ims.vercel.app",
 
         "https://product-services-1.onrender.com",#product services
+        "https://ingredient-services.onrender.com/" #ingredient services
+
         # IMS frontend and services
         "http://localhost:3000",  # ims frontend
         "http://192.168.100.14:3000",  # ims frontend (local network)
         "http://127.0.0.1:8001",  # ims (productservice)
-        "http://localhost:8001", 
-        "http://127.0.0.1:8002",  # ims (ingredientservice)
         "http://localhost:8002",  
         "http://127.0.0.1:8003",  # ims (materialservice) 
         "http://localhost:8003", 
