@@ -22,50 +22,20 @@ app.add_middleware(
         # SUSUNTUKIN Q GOMALAW
         "https://bleu-ums.vercel.app", # ums frontend
         "https://bleu-pos-eight.vercel.app", # pos frontend
-        "https://bleu-ims.vercel.app",
+        "https://bleu-ims.vercel.app", # ims frontend
+        "https://bleu-oos.vercel.app", # oos frontend
 
         "https://product-services-1.onrender.com",#product services
         "https://ingredient-services.onrender.com", #ingredient services
-
-        # IMS frontend and services
-        "http://localhost:3000",  # ims frontend
-        "http://192.168.100.14:3000",  # ims frontend (local network)
-        "http://127.0.0.1:8001",  # ims (productservice)
-        "http://localhost:8002",  
-        "http://127.0.0.1:8003",  # ims (materialservice) 
-        "http://localhost:8003", 
-        "http://127.0.0.1:8004",  # ims (merchandiseservice)
-        "http://localhost:8004", 
-        "http://127.0.0.1:8005",  # ims (recipeservice)
-        "http://localhost:8005", 
-        "http://127.0.0.1:8006",  # ims (wasteservice)
-        "http://localhost:8006", 
-
-        # OOS frontend and services
-        "http://localhost:5000",  # oos frontend
-        "http://192.168.100.14:5000",  # oos frontend (local network)
-        "http://127.0.0.1:7001",  # oos (deliveryservice)
-        "http://localhost:7001", 
-        "http://127.0.0.1:7002",  # oos (menuservice)
-        "http://localhost:7002", 
-        "http://127.0.0.1:7003",  # oos (notificationservice)
-        "http://localhost:7003",  
-        "http://127.0.0.1:7004",  # oos (orderingservice) 
-        "http://localhost:7004", 
-        "http://127.0.0.1:7005",  # oos (paymentservice)
-        "http://localhost:7005", 
-        "http://127.0.0.1:7006",  # oos (userservice)
-        "http://localhost:7006",       
-
-        # POS frontend and services
-        "http://localhost:4001",
-        "http://192.168.100.10:4001",
-        "http://localhost:9000",
-        "http://127.0.0.1:9000", 
-        "http://localhost:9001",
-        "http://127.0.0.1:9001", 
-        "http://localhost:9002",
-        "http://127.0.0.1:9002",  
+        "https://material-service.onrender.com", #material services
+        "https://merchandise-service.onrender.com", #merchandise services
+        "https://recipe-service-npf6.onrender.com", #recipe services
+        "https://waste-service.onrender.com", #waste services
+        "https://discount-services.onrender.com", #discount services
+        "https://sales-service-bm35.onrender.com", #sales services
+        "https://ordering-service.onrender.com", #ordering services
+        "https://payment-service-oo77.onrender.com", #payment services
+        
     ],
     allow_credentials=True,
     allow_methods=["*"],
