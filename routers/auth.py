@@ -38,6 +38,7 @@ class User(BaseModel):
     disabled: bool | None = None
 
 class UserInDB(User):
+    userID: int | None = None
     hashed_password: str
     system: str
 
@@ -73,7 +74,7 @@ async def get_users_from_db(username: str):
     conn = await get_db_connection()
     cursor = await conn.cursor()
     await cursor.execute(
-        '''SELECT Username, UserPassword, UserRole, isDisabled, System FROM Users WHERE Username = ? AND isDisabled = 0''',
+        '''SELECT UserID, Username, UserPassword, UserRole, isDisabled, System FROM Users WHERE Username = ? AND isDisabled = 0''',
         (username,)
     )
     user_rows = await cursor.fetchall()
@@ -82,38 +83,48 @@ async def get_users_from_db(username: str):
     users = []
     for row in user_rows:
         users.append(UserInDB(
-            username=row[0],
-            hashed_password=row[1],
-            userRole=row[2],
-            disabled=row[3] == 1,
-            system=row[4]
+            userID=row[0],
+            username=row[1],
+            hashed_password=row[2],
+            userRole=row[3],
+            disabled=row[4] == 1,
+            system=row[5]
         ))
     return users
 
-# hash pass
+# hass pass
 def get_password_hash(password: str):
     return pwd_context.hash(password)
 
 # ensure admin exists on startup
+import asyncio
+import logging
+
+logger = logging.getLogger("authservice")
+
 async def create_admin_user():
-    admin_user = await get_users_from_db('superadmin')
-    if not admin_user:
-        hashed_password = get_password_hash('superadmin123')
-        conn = await get_db_connection()
-        cursor = await conn.cursor()
-        try:
-            await cursor.execute(
-                '''INSERT INTO Users (UserPassword, Email, UserRole, isDisabled, System, Username, PhoneNumber, FirstName, MiddleName, LastName, Suffix) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                (hashed_password, 'superadmin@example.com', 'superadmin' ,  0,  'AUTH', 'superadmin', '', 'Super', '', 'Admin', '',)
-            )
-            await conn.commit()
-            print("Super Admin created.")
-        finally:
-            await cursor.close()
-            await conn.close()
-    else:
-        print("Super Admin already exists.")
+    try:
+        admin_user = await get_users_from_db('superadmin')
+        if not admin_user:
+            hashed_password = get_password_hash('superadmin123')
+            conn = await get_db_connection()
+            cursor = await conn.cursor()
+            try:
+                await cursor.execute(
+                    '''INSERT INTO Users (UserPassword, Email, UserRole, isDisabled, System, Username, PhoneNumber, FirstName, MiddleName, LastName, Suffix) 
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                    (hashed_password, 'superadmin@example.com', 'superadmin' ,  0,  'AUTH', 'superadmin', '', 'Super', '', 'Admin', '',)
+                )
+                await conn.commit()
+                logger.info("Super Admin created.")
+            finally:
+                await cursor.close()
+                await conn.close()
+        else:
+            logger.info("Super Admin already exists.")
+    except Exception as e:
+        logger.error(f"Error in create_admin_user: {e}")
+        # Optionally, add a timeout or retry logic here
 
 @router.on_event("startup")
 async def on_startup():
@@ -167,7 +178,7 @@ async def get_current_active_user(current_user: UserInDB = Depends(get_current_u
     return current_user
 
 # role-based access control
-def role_required(required_roles: List[str]):
+def role_required(required_roles: list[str]):
     async def role_checker(current_user: UserInDB = Depends(get_current_active_user)):
         if current_user.userRole not in required_roles:
             raise HTTPException(status_code=403, detail="Access denied")
@@ -200,9 +211,14 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username, "role": user.userRole, "system": user.system},
-        expires_delta=access_token_expires
-    )
+    data={
+        "sub": user.username,             # standard claim
+        "username": user.username,        # custom claim for frontend use
+        "role": user.userRole,
+        "system": user.system
+    },
+    expires_delta=access_token_expires
+)
     
     print("Authentication successful for:", user.username)
     return {"access_token": access_token, "token_type": "bearer"}
